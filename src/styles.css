@@ -49,3 +49,105 @@ body,
   opacity: 0.6;
   font-variant-numeric: tabular-nums;
 }
+
+.compli-screen {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 4rem 1.25rem 6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.compli-header h1 {
+  margin: 0 0 0.25rem;
+  color: var(--mesh-accent);
+  font-size: 1.5rem;
+}
+
+.compli-status {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.65;
+  font-variant-numeric: tabular-nums;
+}
+
+.compli-name input,
+.compli-input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--mesh-fg);
+  font: inherit;
+}
+
+.compli-input {
+  min-height: 5rem;
+  resize: vertical;
+}
+
+.compli-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.compli-start,
+.compli-seal,
+.compli-reveal-all,
+.compli-next {
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--mesh-accent);
+  background: transparent;
+  color: var(--mesh-fg);
+  cursor: pointer;
+  font: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.compli-start:disabled,
+.compli-seal:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.compli-banner {
+  margin: 0;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 126, 182, 0.12);
+  border: 1px solid rgba(255, 126, 182, 0.3);
+}
+
+.compli-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.compli-card {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 1;
+  animation: compli-fade 0.4s ease;
+}
+
+@keyframes compli-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.compli-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.6;
+}

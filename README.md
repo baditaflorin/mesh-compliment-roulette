@@ -84,6 +84,8 @@ bash ../mesh-common/scripts/screenshot-app.sh    # regenerate docs/screenshot.pn
 
 See `docs/privacy.md` for the threat model — what other peers in the mesh see, what the self-hosted infra sees, what stays local.
 
+**Author identity is best-effort hidden, not cryptographically anonymous.** The reveal UI deliberately omits the writer's name when rendering each compliment card. However, the underlying commit-reveal data lives in the shared Y.Doc as `compliments-N:reveals.<peerId>` — so `entries[peerId].reveal` exposes which peer wrote which message to any honest client inspecting the doc. Treat this as a fun party game, not a secure anonymous channel. A malicious or curious peer running a modified client can map every compliment back to its author.
+
 ## License
 
 MIT — see `LICENSE`.
