@@ -12,19 +12,32 @@ test("write + seal + reveal round-trips between peers", async ({ browser, baseUR
   try {
     await a.getByPlaceholder("your name").fill("alice");
     await b.getByPlaceholder("your name").fill("bob");
-    await a.waitForTimeout(700);
 
-    await a.getByRole("button", { name: "start round", exact: true }).click();
-    await b.waitForTimeout(400);
+    // Wait for both names to propagate across the mesh: the start button only
+    // enables once each peer sees ≥2 named peers (web-first, no fixed sleep).
+    const aStart = a.getByRole("button", { name: "start round", exact: true });
+    await expect(aStart).toBeEnabled();
+    await expect(b.getByRole("button", { name: "start round", exact: true })).toBeEnabled();
+
+    await aStart.click();
+
+    // The phase transition to "writing" syncs to B; its target banner appears.
+    await expect(a.getByText(/write something kind for/i)).toBeVisible();
+    await expect(b.getByText(/write something kind for/i)).toBeVisible();
 
     await a.getByPlaceholder("say something kind…").fill("you rock bob");
     await a.getByRole("button", { name: "seal", exact: true }).click();
     await b.getByPlaceholder("say something kind…").fill("thanks alice");
     await b.getByRole("button", { name: "seal", exact: true }).click();
-    await b.waitForTimeout(400);
+
+    // Both seals land in the shared doc — each peer should see "2 of 2 sealed"
+    // before anyone reveals (cross-peer commit count, no fixed sleep).
+    await expect(a.getByText(/2 of 2 sealed/)).toBeVisible();
+    await expect(b.getByText(/2 of 2 sealed/)).toBeVisible();
 
     await a.getByRole("button", { name: "reveal all", exact: true }).click();
-    await b.waitForTimeout(1200); // auto-reveal on phase change
+    // Reveal is auto-triggered on the phase transition; web-first assertions
+    // below poll until the revealed cards land on each opposite peer.
 
     // Cross-peer text round-trip: A's sealed compliment surfaces on B and
     // vice-versa (each peer reads on the OPPOSITE peer from the author).

@@ -45,6 +45,7 @@ function Body({ room, config }: { room: YRoom; config: MeshConfig }) {
   const myTarget =
     present.includes(room.peerId) && order.length > 1 ? order[(myIdx + 1) % order.length] : null;
   const myTargetName = myTarget ? (nameOf(myTarget) ?? myTarget.slice(0, 6)) : "";
+  const iAmNamed = present.includes(room.peerId);
   const canStart = present.length >= 2 && phaseState.phase === "lobby";
 
   useEffect(() => {
@@ -65,6 +66,8 @@ function Body({ room, config }: { room: YRoom; config: MeshConfig }) {
     fairRng.rerollMine();
     phaseState.transition("lobby");
   };
+
+  const sealedCount = Object.values(cr.entries).filter((e) => e.hash).length;
 
   const revealedEntries = Object.values(cr.entries).filter(
     (e) => e.reveal && e.reveal.payload.to === room.peerId,
@@ -99,7 +102,13 @@ function Body({ room, config }: { room: YRoom; config: MeshConfig }) {
           >
             start round
           </button>
-          {present.length < 2 && <p className="compli-hint">need ≥2 named peers</p>}
+          {!iAmNamed && <p className="compli-hint">Type your name above to join the round.</p>}
+          {iAmNamed && present.length < 2 && (
+            <p className="compli-hint">
+              You&apos;re in. Now open this page in a second tab (or share the 📡 invite link) so
+              there&apos;s someone to compliment — then press start round.
+            </p>
+          )}
         </div>
       )}
 
@@ -133,7 +142,10 @@ function Body({ room, config }: { room: YRoom; config: MeshConfig }) {
               reveal all
             </button>
           </div>
-          {cr.myHash && <p className="compli-hint">sealed · waiting for reveal</p>}
+          <p className="compli-hint">
+            {sealedCount} of {present.length} sealed
+            {cr.myHash ? " · yours is in — reveal all once everyone has sealed" : ""}
+          </p>
         </div>
       )}
 
