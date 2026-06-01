@@ -4,7 +4,11 @@
 [![version](https://img.shields.io/badge/version-0.1.1-blue)](https://github.com/baditaflorin/mesh-compliment-roulette/blob/main/package.json)
 [![license](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
-> Fair-RNG pairwise sealed compliments, revealed without author labels.
+> Everyone secretly writes one kind note for the next person, then all reveal at once — no names attached.
+
+Each round, a fair shuffle pairs everyone up: you write a compliment for one peer, they write one for someone else. Notes stay sealed until someone hits **reveal all**, and cards show up without the author's name.
+
+**Try it in 30 seconds:** open the live link below, type a name, then open the same page in a second tab and type a different name. Press **start round** in either tab, write, seal, and reveal.
 
 **Live → https://baditaflorin.github.io/mesh-compliment-roulette/**
 
