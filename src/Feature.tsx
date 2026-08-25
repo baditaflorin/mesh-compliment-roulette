@@ -5,6 +5,7 @@ import {
   useFairRng,
   useNamedPeer,
   usePhase,
+  useRoster,
   type MeshConfig,
   type YRoom,
 } from "@baditaflorin/mesh-common";
@@ -26,7 +27,14 @@ export function Feature({ room, config }: Props) {
 
 function Body({ room, config }: { room: YRoom; config: MeshConfig }) {
   const { name, setName, names, nameOf } = useNamedPeer(config, room);
-  const fairRng = useFairRng(room, "compli-salts");
+  // This game explicitly supports a second tab as a separate participant, so
+  // keep its session-based roster rather than collapsing same-device peers.
+  const roster = useRoster(room, { dedupeByDevice: false });
+  const present = roster.present.filter((peerId) => Boolean(names[peerId]));
+  const fairRng = useFairRng(room, "compli-salts", {
+    peerIds: present,
+    minContributors: 1,
+  });
   const phaseState = usePhase<"lobby" | "writing" | "reveal">(room, "phase", "lobby");
   const stateMap = room.doc.getMap<number>("state");
   const [, rerender] = useState(0);
@@ -39,7 +47,6 @@ function Body({ room, config }: { room: YRoom; config: MeshConfig }) {
   const cr = useCommitRevealHook<Compliment>(room, config.storagePrefix, `compliments-${roundN}`);
   const [draft, setDraft] = useState("");
 
-  const present = Object.keys(names).sort();
   const order = fairRng.shuffle(present);
   const myIdx = order.indexOf(room.peerId);
   const myTarget =
@@ -63,7 +70,7 @@ function Body({ room, config }: { room: YRoom; config: MeshConfig }) {
 
   const nextRound = () => {
     stateMap.set("round", roundN + 1);
-    fairRng.rerollMine();
+    fairRng.rerollRound();
     phaseState.transition("lobby");
   };
 
